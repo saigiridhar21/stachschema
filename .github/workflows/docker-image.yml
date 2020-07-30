@@ -29,12 +29,11 @@ jobs:
           repository: saigiridhar21/stachschema-models
           path: stachschema-models
           ref: ${{ github.ref }}
-      - name: Contents
+      - name: Running docker
         if: github.ref == 'refs/heads/master'
         run: |
-          ls -latr
-          ls -latr stachschema-models
-          ls -latr stachschema-sdk
+          cd stachschema-sdks
+          docker-compose up 
       - name: Build the Docker image and test
         if: github.ref != 'refs/heads/master'
         run: |
