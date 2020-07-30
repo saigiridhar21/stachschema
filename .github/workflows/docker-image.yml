@@ -39,6 +39,10 @@ jobs:
         if: github.ref == 'refs/heads/master'
         run: |
           if git -C stachschema-sdks diff-index --quiet HEAD; then echo "No changes to the STACH models"; else echo "Detected changes in STACH models"; export STACH_CHANGES=1; fi
+      - name: Master and raise pull request
+        if: github.ref == 'refs/heads/master' && env.STACH_CHANGES == 1
+        run: |
+          echo "Haiii"
           cd stachschema-sdks; git status
       - name: Build the Docker image and test
         if: github.ref != 'refs/heads/master'
