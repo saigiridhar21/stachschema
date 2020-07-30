@@ -45,10 +45,9 @@ jobs:
       - name: Master and raise pull request
         if: env.STACH_CHANGES == 1
         run: |
+          cd stachschema-sdks
           git config user.email "${{ secrets.USER_EMAIL }}"
           git config user.name "${{ secrets.USER }}"
-          
-          cd stachschema-sdks
           
           git checkout -b test_branch
           git status
