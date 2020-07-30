@@ -35,6 +35,10 @@ jobs:
           export STACH_MODELS_PATH=${PWD}/stachschema-models/proto
           export STACH_SDKS_REPO_PATH=${PWD}/stachschema-sdks
           docker-compose -f stachschema-sdks/docker-compose.yml up
+      - name: Raise pull request
+        if: github.ref == 'refs/heads/master'
+        run: |
+          git status
       - name: Build the Docker image and test
         if: github.ref != 'refs/heads/master'
         run: |
