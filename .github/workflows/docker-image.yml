@@ -28,6 +28,7 @@ jobs:
         with:
           repository: saigiridhar21/stachschema-models
           path: stachschema-models
+          ref: ${{ github.ref }}
       - name: Contents
         if: github.ref == 'refs/heads/master'
         run: |
