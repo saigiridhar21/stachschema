@@ -29,9 +29,9 @@ jobs:
         run: |
           git -C stachschema-models log
           count=`git -C stachschema-models log -1 --stat --oneline --no-decorate | grep -c .proto`
+          echo $count
           if $count -eq 0; then
             echo "No STACH models were updated"
-            return false
           else
             echo "( $count ) STACH models were updated. Updating the STACH SDKs"
             export STACH_CHANGES=1;
@@ -50,7 +50,7 @@ jobs:
           git config user.email "${{ secrets.USER_EMAIL }}"
           git config user.name "${{ secrets.USER }}"
           
-          git checkout -b test_branch
+          git checkout -b test_branch_`date`
           git status
           git add -A .
           git commit -m "feat(stachschema-sdks): Updating SDKs";
