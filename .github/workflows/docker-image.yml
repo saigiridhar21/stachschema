@@ -13,6 +13,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@master
+        with:
+          name: saigiridhar21/stachschema-sdks
       - uses: actions/checkout@v2
       - name: Install Hub
         if: github.ref == 'refs/heads/master'
@@ -22,7 +25,7 @@ jobs:
       - name: Clone STACH SDK GitHUb repository
         if: github.ref == 'refs/heads/master'
         run: |
-          hub clone https://github.com/saigiridhar21/stachschema-sdks.git ${{ github.repository }}
+          hub clone https://github.com/saigiridhar21/stachschema-sdks.git
           ls -latr
           pwd
       - name: Build the Docker image and test
