@@ -20,7 +20,7 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
-          sudo apt install hub
+          sudo snap install hub
           hub --help
       - name: Build the Docker image and test
         if: github.ref != 'refs/heads/master'
