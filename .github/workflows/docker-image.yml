@@ -40,7 +40,7 @@ jobs:
         run: |
           if git -C stachschema-sdks diff-index --quiet HEAD; then echo "No changes to the STACH models";export STACH_CHANGES=2; else echo "Detected changes in STACH models"; export STACH_CHANGES=1;echo "::set-env name=STACH_CHANGES::$STACH_CHANGES"; fi
       - name: Master and raise pull request
-        if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/master' && env.STACH_CHANGES == 1
         run: |
           printenv
           echo "Haiii"
