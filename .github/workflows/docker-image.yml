@@ -63,7 +63,7 @@ jobs:
           echo "Helloo2"
           git push origin test_branch;
           echo "Helloo3"
-          hub pull-request -h test_branch
+          hub pull-request -m "$(git log -1 --pretty=%B)" -h test_branch
       - name: Build the Docker image and test
         if: github.ref != 'refs/heads/master'
         run: |
