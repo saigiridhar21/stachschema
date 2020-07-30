@@ -25,6 +25,7 @@ jobs:
         with:
           repository: saigiridhar21/stachschema-models
           path: stachschema-models
+          ref: master
       - name: Check whether models were changed in last commit
         run: |
           git -C stachschema-models log -1 --stat --oneline --no-decorate
