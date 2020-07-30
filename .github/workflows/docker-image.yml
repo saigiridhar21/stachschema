@@ -25,7 +25,7 @@ jobs:
         with:
           repository: saigiridhar21/stachschema-models
           path: stachschema-models
-          ref: master
+          ref: origin/master
       - name: Check whether models were changed in last commit
         run: |
           t=$(git -C stachschema-models diff --name-only HEAD HEAD~1)
