@@ -28,10 +28,10 @@ jobs:
           ref: master
       - name: Check whether models were changed in last commit
         run: |
-          t=`git -C stachschema-models diff --name-only HEAD HEAD~1`
-          echo $t
-          git -C stachschema-models log -1 --stat --oneline --no-decorate master
-          sa=`git -C stachschema-models log -1 --stat --oneline --no-decorate master`
+          #t=`git -C stachschema-models diff --name-only HEAD HEAD~1`
+          #echo $t
+          git -C stachschema-models log -1 --stat --oneline --no-decorate origin/master
+          sa=`git -C stachschema-models log -1 --stat --oneline --no-decorate origin/master`
           echo $sa
           count=`git -C stachschema-models log -1 --stat --oneline --no-decorate | grep -c .proto`
           echo $count
