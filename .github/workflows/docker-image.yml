@@ -38,7 +38,7 @@ jobs:
       - name: Raise pull request
         if: github.ref == 'refs/heads/master'
         run: |
-          git status
+          git --git-dir=stachschema-sdks/.git diff-index --quiet HEAD
       - name: Build the Docker image and test
         if: github.ref != 'refs/heads/master'
         run: |
