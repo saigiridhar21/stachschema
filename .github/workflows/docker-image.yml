@@ -61,7 +61,8 @@ jobs:
           echo "Helloo1"
           git commit -m "feat(stachschema-sdks): Updating SDKs";
           echo "Helloo2"
-          git push origin test_branch;
+          hub --help
+          hub push origin test_branch;
           echo "Helloo3"
           hub pull-request -m "$(git log -1 --pretty=%B)" -h test_branch
       - name: Build the Docker image and test
