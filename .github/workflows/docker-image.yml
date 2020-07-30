@@ -22,9 +22,8 @@ jobs:
       - name: Clone STACH SDK GitHUb repository
         if: github.ref == 'refs/heads/master'
         run: |
-          hub clone https://github.com/saigiridhar21/stachschema-sdks.git /stachschema-sdks
+          hub clone https://github.com/saigiridhar21/stachschema-sdks.git
           ls -latr
-          ls -latr /
           pwd
       - name: Build the Docker image and test
         if: github.ref != 'refs/heads/master'
