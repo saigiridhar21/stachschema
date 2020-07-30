@@ -13,19 +13,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@master
-        with:
-          name: saigiridhar21/stachschema-sdks
-      - uses: actions/checkout@v2
       - name: Install Hub
         if: github.ref == 'refs/heads/master'
         run: |
           sudo snap install hub --classic
           hub --help
-      - name: Clone STACH SDK GitHUb repository
+      - name: Check out STACH SDKs
+        uses: actions/checkout@v2
+        with:
+          name: saigiridhar21/stachschema-sdks
+          path: stachschema-sdks
+      - name: Check out STACH model
+        uses: actions/checkout@v2
+        with:
+          name: saigiridhar21/stachschema-models
+          path: stachschema-models
+      - name: Contents
         if: github.ref == 'refs/heads/master'
         run: |
-          hub clone https://github.com/saigiridhar21/stachschema-sdks.git
           ls -latr
           pwd
       - name: Build the Docker image and test
