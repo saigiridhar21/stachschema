@@ -28,6 +28,9 @@ jobs:
           fetch-depth: 0
       - name: Check whether models were changed in last commit
         run: |
+          git -C stachschema-models log -1 --stat --oneline --no-decorate
+          t=`git -C stachschema-models log -1 --stat --oneline --no-decorate`
+          echo $t
           count=`git -C stachschema-models log -1 --stat --oneline --no-decorate | grep -c ".proto$"`
           echo $count
           if [ "$count" -eq "0" ]; then
