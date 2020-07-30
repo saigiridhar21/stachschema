@@ -21,18 +21,18 @@ jobs:
       - name: Check out STACH SDKs
         uses: actions/checkout@v2
         with:
-          name: saigiridhar21/stachschema-sdks
+          repository: saigiridhar21/stachschema-sdks
           path: stachschema-sdks
       - name: Check out STACH model
         uses: actions/checkout@v2
         with:
-          name: saigiridhar21/stachschema-models
+          repository: saigiridhar21/stachschema-models
           path: stachschema-models
       - name: Contents
         if: github.ref == 'refs/heads/master'
         run: |
           ls -latr
-          pwd
+          ls -latr /stachschema-models
       - name: Build the Docker image and test
         if: github.ref != 'refs/heads/master'
         run: |
