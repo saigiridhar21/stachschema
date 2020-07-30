@@ -27,7 +27,9 @@ jobs:
           path: stachschema-models
       - name: Check whether models were changed in last commit
         run: |
-          git -C stachschema-models log
+          git -C stachschema-models log -1 --stat --oneline --no-decorate
+          sa=`git -C stachschema-models log -1 --stat --oneline --no-decorate`
+          echo $sa
           count=`git -C stachschema-models log -1 --stat --oneline --no-decorate | grep -c .proto`
           echo $count
           if $count -eq 0; then
@@ -50,15 +52,16 @@ jobs:
           git config user.email "${{ secrets.USER_EMAIL }}"
           git config user.name "${{ secrets.USER }}"
           
-          git checkout -b test_branch_`date`
+          branch_name="feat/stachschema_sdks_`date +%s`/updating-models" 
+          git checkout -b $branch_name
           git status
           git add -A .
           git commit -m "feat(stachschema-sdks): Updating SDKs";
           echo "Committed all the changes"
           
-          git push origin test_branch
+          git push origin $branch_name
           echo "Pushed all the changes to remote location"
           
           export GITHUB_USER=${{ secrets.USER }}
           export GITHUB_TOKEN=${{ secrets.USER_API_KEY }}
-          hub pull-request -m "feat(stachschema-sdks): Updating SDKs" -h test_branch
+          hub pull-request -m "feat(stachschema-sdks): Updating SDKs" -h $branch_name
