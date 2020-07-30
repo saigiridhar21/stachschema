@@ -28,6 +28,7 @@ jobs:
           ref: master
       - name: Check whether models were changed in last commit
         run: |
+          git -C stachschema-models diff --name-only HEAD HEAD~1
           git -C stachschema-models log -1 --stat --oneline --no-decorate master
           sa=`git -C stachschema-models log -1 --stat --oneline --no-decorate master`
           echo $sa
