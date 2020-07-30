@@ -17,7 +17,7 @@ jobs:
       - name: Install Hub
         if: github.ref == 'refs/heads/master'
         run: |
-          sudo snap hub snap install hub --classic
+          sudo snap install hub --classic
           hub --help
       - name: Clone STACH SDK GitHUb repository
         if: github.ref == 'refs/heads/master'
