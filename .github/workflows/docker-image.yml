@@ -32,8 +32,7 @@ jobs:
       - name: Running docker
         if: github.ref == 'refs/heads/master'
         run: |
-          cd stachschema-sdks
-          docker-compose up 
+          docker-compose -e STACH_PROTO_PATH=${PWD}/stachschema-models/proto -f stachschema-models/docker-compose.yml  
       - name: Build the Docker image and test
         if: github.ref != 'refs/heads/master'
         run: |
