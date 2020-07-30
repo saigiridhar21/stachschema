@@ -45,19 +45,20 @@ jobs:
       - name: Master and raise pull request
         if: env.STACH_CHANGES == 1
         run: |
-          printenv
-          git config --global user.email "saigiridhar21@gmail.com"
-          git config --global user.name "saigiridhar21"
-          export GITHUB_USER=${{ env.GITHUB_ACTOR }}
-          export GITHUB_TOKEN=${{ secrets.USER_API_KEY }}
+          git config --global user.email "${{ secrets.USER_EMAIL }}"
+          git config --global user.name "${{ secrets.USER }}"
+          
           cd stachschema-sdks
+          
           git checkout -b test_branch
           git status
           git add -A .
-          echo "Helloo1"
           git commit -m "feat(stachschema-sdks): Updating SDKs";
-          echo "Helloo2"
-          hub --help
-          hub push origin test_branch;
-          echo "Helloo3"
-          hub pull-request -m "$(git log -1 --pretty=%B)" -h test_branch
+          echo "Committed all the changes"
+          
+          git push origin test_branch
+          echo "Pushed all the changes to remote location"
+          
+          export GITHUB_USER=${{ secrets.USER }}
+          export GITHUB_TOKEN=${{ secrets.USER_API_KEY }}
+          hub pull-request -m "feat(stachschema-sdks): Updating SDKs" -h test_branch
