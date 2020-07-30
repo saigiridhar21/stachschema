@@ -23,6 +23,7 @@ jobs:
         with:
           repository: saigiridhar21/stachschema-sdks
           path: stachschema-sdks
+          token: ${{ secrets.USER_API_KEY }}
       - name: Check out STACH model
         uses: actions/checkout@v2
         with:
@@ -55,9 +56,12 @@ jobs:
           git checkout -b test_branch
           git status
           git add -A .
+          echo "Helloo1"
           git commit -m "feat(stachschema-sdks): Updating SDKs";
+          echo "Helloo2"
           git push origin test_branch;
           hub --help
+          echo "Helloo3"
           hub pull-request -b test_branch
       - name: Build the Docker image and test
         if: github.ref != 'refs/heads/master'
