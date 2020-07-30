@@ -25,11 +25,9 @@ jobs:
         with:
           repository: saigiridhar21/stachschema-models
           path: stachschema-models
-          fetch-depth: 3
+          fetch-depth: 0
       - name: Check whether models were changed in last commit
         run: |
-          t=$(git -C stachschema-models diff --name-only HEAD HEAD~1)
-          echo $t
           git -C stachschema-models log -1 --stat --oneline --no-decorate origin/master
           sa=`git -C stachschema-models log -1 --stat --oneline --no-decorate origin/master`
           echo $sa
