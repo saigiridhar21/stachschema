@@ -3,8 +3,6 @@ name: Docker Image CI
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
 
 jobs:
 
@@ -14,10 +12,8 @@ jobs:
 
     steps:
       - name: Install Hub
-        if: github.ref == 'refs/heads/master'
         run: |
           sudo snap install hub --classic
-          hub --help
       - name: Check out STACH SDKs
         uses: actions/checkout@v2
         with:
@@ -29,25 +25,25 @@ jobs:
         with:
           repository: saigiridhar21/stachschema-models
           path: stachschema-models
-          ref: ${{ github.ref }}
-      - name: Running docker
-        if: github.ref == 'refs/heads/master'
+      - name: Check whether models were changed in last commit
+        run: |
+          count=`git log -1 --stat --oneline --no-decorate | grep -c .proto`
+          if $count -eq 0; then
+            echo "No STACH models were updated"
+            return false
+          else
+            echo "( $count ) STACH models were updated. Updating the STACH SDKs"
+            export STACH_CHANGES=1;
+            echo "::set-env name=STACH_CHANGES::$STACH_CHANGES";
+          fi       
+      - name: Updating the SDK code locally
+        if: env.STACH_CHANGES == 1
         run: |
           export STACH_MODELS_PATH=${PWD}/stachschema-models/proto
           export STACH_SDKS_REPO_PATH=${PWD}/stachschema-sdks
           docker-compose -f stachschema-sdks/docker-compose.yml up
-      - name: Check for diff
-        if: github.ref == 'refs/heads/master'
-        run: |
-          if git -C stachschema-sdks diff-index --quiet HEAD; then 
-            echo "No changes to the STACH models"; 
-          else 
-            echo "Detected changes in STACH models";
-            export STACH_CHANGES=1;
-            echo "::set-env name=STACH_CHANGES::$STACH_CHANGES";
-          fi
       - name: Master and raise pull request
-        if: github.ref == 'refs/heads/master' && env.STACH_CHANGES == 1
+        if: env.STACH_CHANGES == 1
         run: |
           printenv
           git config --global user.email "saigiridhar21@gmail.com"
@@ -65,10 +61,3 @@ jobs:
           hub push origin test_branch;
           echo "Helloo3"
           hub pull-request -m "$(git log -1 --pretty=%B)" -h test_branch
-      - name: Build the Docker image and test
-        if: github.ref != 'refs/heads/master'
-        run: |
-          docker build --build-arg VERSION=4.2.2 -t openapi-generator-cli-custom -f Dockerfile .
-          docker images
-          docker run --rm -v "${PWD}:/local" openapi-generator-cli-custom generate --generator-name CustomPythonClientCodegen --input-spec https://raw.githubusercontent.com/openapitools/openapi-generator/master/modules/openapi-generator/src/test/resources/2_0/petstore.yaml --output /local/out --skip-validate-spec
-          
