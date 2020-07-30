@@ -22,7 +22,7 @@ jobs:
       - name: Clone STACH SDK GitHUb repository
         if: github.ref == 'refs/heads/master'
         run: |
-          hub clone https://github.com/saigiridhar21/stachschema-sdks.git
+          hub clone https://github.com/saigiridhar21/stachschema-sdks.git ${{ github.repository }}
           ls -latr
           pwd
       - name: Build the Docker image and test
