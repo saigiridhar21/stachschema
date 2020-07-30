@@ -33,7 +33,7 @@ jobs:
           echo $sa
           count=`git -C stachschema-models log -1 --stat --oneline --no-decorate | grep -c .proto`
           echo $count
-          if $count -eq 0; then
+          if [ "$count" -eq "0" ]; then
             echo "No STACH models were updated"
           else
             echo "( $count ) STACH models were updated. Updating the STACH SDKs"
