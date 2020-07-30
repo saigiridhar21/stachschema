@@ -62,9 +62,8 @@ jobs:
           git commit -m "feat(stachschema-sdks): Updating SDKs";
           echo "Helloo2"
           git push origin test_branch;
-          hub --help
           echo "Helloo3"
-          hub pull-request -b test_branch
+          hub pull-request -h test_branch
       - name: Build the Docker image and test
         if: github.ref != 'refs/heads/master'
         run: |
