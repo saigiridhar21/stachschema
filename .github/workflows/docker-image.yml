@@ -29,9 +29,8 @@ jobs:
       - name: Check whether models were changed in last commit
         run: |
           git -C stachschema-models log -1 --name-only --oneline
-          t=`git -C stachschema-models log -1 --stat --oneline --no-decorate`
-          echo $t
-          count=`git -C stachschema-models log -1 --name-only --oneline`
+          git -C stachschema-models log -1 --name-only --oneline | wc -l
+          count=`git -C stachschema-models log -1 --name-only --oneline | wc -l`
           echo $count
           if [ "$count" -eq "0" ]; then
             echo "No STACH models were updated"
