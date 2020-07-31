@@ -45,7 +45,7 @@ jobs:
         run: |
           export STACH_MODELS_PATH=${PWD}/stachschema-models/proto
           export STACH_SDKS_REPO_PATH=${PWD}/stachschema-sdks
-          docker-compose -f stachschema-sdks/docker-compose.yml up
+          docker-compose -f stachschema-sdks/docker-compose.generate.yml up
           
       - name: Raise pull request
         if: env.STACH_CHANGES == 1
