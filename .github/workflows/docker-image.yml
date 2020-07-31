@@ -22,7 +22,7 @@ jobs:
           path: stachschema-sdks
           token: ${{ secrets.USER_API_KEY }}
           
-      - name: Check out STACH model
+      - name: Check out STACH models
         uses: actions/checkout@v2
         with:
           repository: saigiridhar21/stachschema-models
@@ -40,14 +40,14 @@ jobs:
             echo "::set-env name=STACH_CHANGES::$STACH_CHANGES";
           fi  
              
-      - name: Updating the SDK code locally
+      - name: Updating SDKs code locally
         if: env.STACH_CHANGES == 1
         run: |
           export STACH_MODELS_PATH=${PWD}/stachschema-models/proto
           export STACH_SDKS_REPO_PATH=${PWD}/stachschema-sdks
           docker-compose -f stachschema-sdks/docker-compose.yml up
           
-      - name: Master and raise pull request
+      - name: Raise pull request
         if: env.STACH_CHANGES == 1
         run: |
           cd stachschema-sdks
