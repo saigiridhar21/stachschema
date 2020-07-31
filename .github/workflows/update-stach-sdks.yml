@@ -68,7 +68,8 @@ jobs:
           export GITHUB_TOKEN=${{ secrets.USER_API_KEY }}
           hub pull-request -m "feat(stachschema-sdks): Updating SDKs" -h $branch_name
 
-      - uses: actions/upload-artifact@v2
+      - name: Uploading artifacts
+        uses: actions/upload-artifact@v2
         with:
           name: artifacts
           path: |
