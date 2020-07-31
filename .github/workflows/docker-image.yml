@@ -14,37 +14,39 @@ jobs:
       - name: Install Hub
         run: |
           sudo snap install hub --classic
+          
       - name: Check out STACH SDKs
         uses: actions/checkout@v2
         with:
           repository: saigiridhar21/stachschema-sdks
           path: stachschema-sdks
           token: ${{ secrets.USER_API_KEY }}
+          
       - name: Check out STACH model
         uses: actions/checkout@v2
         with:
           repository: saigiridhar21/stachschema-models
           path: stachschema-models
           fetch-depth: 0
+          
       - name: Check whether models were changed in last commit
         run: |
-          git -C stachschema-models log -1 --name-only --oneline
-          git -C stachschema-models log -1 --name-only --oneline | wc -l
           count=`git -C stachschema-models log -1 --name-only --oneline | grep -E ".*\.proto$" | wc -l`
-          echo $count
           if [ "$count" -eq "0" ]; then
             echo "No STACH models were updated"
           else
             echo "( $count ) STACH models were updated. Updating the STACH SDKs"
             export STACH_CHANGES=1;
             echo "::set-env name=STACH_CHANGES::$STACH_CHANGES";
-          fi       
+          fi  
+             
       - name: Updating the SDK code locally
         if: env.STACH_CHANGES == 1
         run: |
           export STACH_MODELS_PATH=${PWD}/stachschema-models/proto
           export STACH_SDKS_REPO_PATH=${PWD}/stachschema-sdks
           docker-compose -f stachschema-sdks/docker-compose.yml up
+          
       - name: Master and raise pull request
         if: env.STACH_CHANGES == 1
         run: |
