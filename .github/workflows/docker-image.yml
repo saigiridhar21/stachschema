@@ -30,7 +30,7 @@ jobs:
         run: |
           git -C stachschema-models log -1 --name-only --oneline
           git -C stachschema-models log -1 --name-only --oneline | wc -l
-          count=`git -C stachschema-models log -1 --name-only --oneline | wc -l`
+          count=`git -C stachschema-models log -1 --name-only --oneline | grep -E ".*\.proto$" | wc -l`
           echo $count
           if [ "$count" -eq "0" ]; then
             echo "No STACH models were updated"
