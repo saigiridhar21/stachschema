@@ -70,6 +70,7 @@ jobs:
           hub pull-request -m "feat(stachschema-sdks): Updating SDKs" -h $branch_name
 
       - name: Uploading artifacts
+        if: env.STACH_CHANGES == 1
         uses: actions/upload-artifact@v2
         with:
           name: artifacts
