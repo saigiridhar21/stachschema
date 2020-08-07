@@ -34,6 +34,7 @@ jobs:
           fi  
           
       - name: Check out STACH SDKs
+        if: env.STACH_CHANGES == 1
         uses: actions/checkout@v2
         with:
           repository: saigiridhar21/stachschema-sdks
