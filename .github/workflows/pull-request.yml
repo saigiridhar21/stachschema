@@ -1,4 +1,4 @@
-name: Update STACH SDKs
+name: Generate STACH SDKs and raise the pull request
 
 on:
   push:
@@ -14,13 +14,6 @@ jobs:
       - name: Install Hub
         run: |
           sudo snap install hub --classic
-          
-      - name: Check out STACH SDKs
-        uses: actions/checkout@v2
-        with:
-          repository: saigiridhar21/stachschema-sdks
-          path: stachschema-sdks
-          token: ${{ secrets.USER_API_KEY }}
           
       - name: Check out STACH models
         uses: actions/checkout@v2
@@ -39,7 +32,14 @@ jobs:
             export STACH_CHANGES=1;
             echo "::set-env name=STACH_CHANGES::$STACH_CHANGES";
           fi  
-             
+          
+      - name: Check out STACH SDKs
+        uses: actions/checkout@v2
+        with:
+          repository: saigiridhar21/stachschema-sdks
+          path: stachschema-sdks
+          token: ${{ secrets.USER_API_KEY }}
+                   
       - name: Updating SDKs code locally
         if: env.STACH_CHANGES == 1
         run: |
