@@ -28,6 +28,11 @@ jobs:
         run: |
           cd stachschema-models
           git status
+          echo "${{ github.ref }}"
+          echo "${{ github.head_ref }}"
+          echo "${{ github.base_ref }}"
+          echo "${{ github.actor }}"
+          echo "${{ toJson(github) }}"
           
       - name: Check whether models were changed in last commit
         run: |
