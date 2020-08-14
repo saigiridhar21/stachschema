@@ -7,6 +7,7 @@ This schema defines the format of tabular data, the relationships between column
 
 ## Overview
 
+
 Tables can be more complex than a two-dimensional array of data. There are structural relationships that are important for understanding how data is related in order to facilitate human consumption. By retaining this information, it allows users to build these relationships in one application and carry them over to another, without having to redo this work. Once those relationships are defined, they can drive how tables can be bound to charts.
 
 ## Motivation
