@@ -32,6 +32,7 @@ jobs:
           echo "${{ github.head_ref }}"
           echo "${{ github.base_ref }}"
           echo "${{ github.actor }}"
+          echo "{{ github.event.number }}"
           echo "${{ toJson(github) }}"
           
       - name: Check whether models were changed in last commit
