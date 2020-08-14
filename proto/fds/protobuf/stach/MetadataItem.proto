@@ -34,7 +34,7 @@ message MetadataItem {
 	  factset.protobuf.stach.table.StringArray string_array = 157;
 	  factset.protobuf.stach.table.DurationArray duration_array = 158;
 	  factset.protobuf.stach.table.TimestampArray timestamp_array = 159;
-      
+    
       	  factset.protobuf.stach.table.Reference ref_value = 201;
   }
 }
