@@ -3,6 +3,8 @@ name: Generate STACH SDKs and raise the pull request
 on:
   push:
     branches: [ master ]
+  pull_request:
+    branches: [ master ]
 
 jobs:
 
@@ -21,6 +23,11 @@ jobs:
           repository: saigiridhar21/stachschema-models
           path: stachschema-models
           fetch-depth: 0
+          
+      - name: Check branch
+        run: |
+          cd stachschema-models
+          git status
           
       - name: Check whether models were changed in last commit
         run: |
