@@ -61,22 +61,6 @@ jobs:
         run: |
           cd stachschema-sdks
           
-          pr_number="${{ github.event.number }}"
-          branch_name="feat/stachschema-sdks/stachschema-pr-$pr_number"
-          remote_branch_check=$(git ls-remote --heads origin $branch_name)
-          if [ -z "$remote_branch_check" ]
-          then
-            echo "Does not exist"
-            
-            git checkout -b $branch_name
-            
-          else
-            echo "Already exists"
-                      
-            git checkout $branch_name
-           
-          fi
-          
           export STACH_MODELS_PATH=${PWD}/../stachschema-models/proto
           export STACH_SDKS_REPO_PATH=${PWD}
           docker-compose -f docker-compose.generate.yml up
