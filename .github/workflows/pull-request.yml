@@ -59,6 +59,9 @@ jobs:
       - name: Cloning existing branch if yes
         if: env.STACH_CHANGES == 1
         run: |
+          git config user.email "${{ secrets.USER_EMAIL }}"
+          git config user.name "${{ secrets.USER }}"
+          
           cd stachschema-sdks
           pr_number="${{ github.event.number }}"
           branch_name="feat/stachschema-sdks/stachschema-pr-$pr_number"
@@ -66,6 +69,30 @@ jobs:
           if [ -z "$remote_branch_check" ]
           then
             echo "Does not exist"
+            
+            git checkout -b $branch_name
+                        
+            export STACH_MODELS_PATH=${PWD}/../stachschema-models/proto
+            export STACH_SDKS_REPO_PATH=${PWD}
+            docker-compose -f docker-compose.generate.yml up
+            
+            git status
+            if git diff-index --quiet HEAD -- 
+            then 
+              echo "No changes to commit." 
+            else 
+              git add -A .
+              git commit -m "feat(sdk): Auto-commit from PR $pr_number for STACH SDK"
+              echo "Committed all the changes"
+            
+              git push origin $branch_name
+              echo "Pushed all the changes to remote location"
+            fi
+            
+            export GITHUB_USER=${{ secrets.USER }}
+            export GITHUB_TOKEN=${{ secrets.USER_API_KEY }}
+            hub pull-request -m "feat(stachschema-sdks): Updating SDKs" -h $branch_name
+            
           else
             echo "Already exists"
                       
