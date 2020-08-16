@@ -54,10 +54,12 @@ jobs:
           repository: saigiridhar21/stachschema-sdks
           path: stachschema-sdks
           token: ${{ secrets.USER_API_KEY }}
+          fetch-depth: 0
                    
       - name: Cloning existing branch if yes
         if: env.STACH_CHANGES == 1
         run: |
+          cd stachschema-sdks
           pr_number="${{ github.event.number }}"
           branch_name="feat/stachschema-sdks/stachschema-pr-$pr_number"
           remote_branch_check=$(git ls-remote --heads origin $branch_name)
