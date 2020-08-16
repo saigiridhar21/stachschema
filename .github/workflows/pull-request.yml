@@ -23,6 +23,7 @@ jobs:
           repository: saigiridhar21/stachschema-models
           path: stachschema-models
           fetch-depth: 0
+          ref: "${{ github.ref }}" 
           
       - name: Check branch
         run: |
