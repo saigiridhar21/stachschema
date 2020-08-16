@@ -61,9 +61,6 @@ jobs:
         run: |
           cd stachschema-sdks
           
-          git config user.email "${{ secrets.USER_EMAIL }}"
-          git config user.name "${{ secrets.USER }}"
-
           pr_number="${{ github.event.number }}"
           branch_name="feat/stachschema-sdks/stachschema-pr-$pr_number"
           remote_branch_check=$(git ls-remote --heads origin $branch_name)
@@ -72,77 +69,35 @@ jobs:
             echo "Does not exist"
             
             git checkout -b $branch_name
-                        
-            export STACH_MODELS_PATH=${PWD}/../stachschema-models/proto
-            export STACH_SDKS_REPO_PATH=${PWD}
-            docker-compose -f docker-compose.generate.yml up
-            
-            git status
-            if git diff-index --quiet HEAD -- 
-            then 
-              echo "No changes to commit." 
-            else 
-              git add -A .
-              git commit -m "feat(sdk): Auto-commit from PR $pr_number for STACH SDK"
-              echo "Committed all the changes"
-            
-              git push origin $branch_name
-              echo "Pushed all the changes to remote location"
-            fi
-            
-            export GITHUB_USER=${{ secrets.USER }}
-            export GITHUB_TOKEN=${{ secrets.USER_API_KEY }}
-            hub pull-request -m "feat(stachschema-sdks): Updating SDKs" -h $branch_name
             
           else
             echo "Already exists"
                       
             git checkout $branch_name
-            git pull
-            
-            export STACH_MODELS_PATH=${PWD}/../stachschema-models/proto
-            export STACH_SDKS_REPO_PATH=${PWD}
-            docker-compose -f docker-compose.generate.yml up
-            
-            git status
-            if git diff-index --quiet HEAD -- 
-            then 
-              echo "No changes to commit." 
-            else 
-              git add -A .
-              git commit -m "feat(sdk): Auto-commit from PR $pr_number for STACH SDK"
-              echo "Committed all the changes"
-            
-              git push origin $branch_name
-              echo "Pushed all the changes to remote location"
-            fi
+           
           fi
+          
+          export STACH_MODELS_PATH=${PWD}/../stachschema-models/proto
+          export STACH_SDKS_REPO_PATH=${PWD}
+          docker-compose -f docker-compose.generate.yml up
                    
-      - name: Updating SDKs code locally
-        if: env.STACH_CHANGES == 2
-        run: |
-          export STACH_MODELS_PATH=${PWD}/stachschema-models/proto
-          export STACH_SDKS_REPO_PATH=${PWD}/stachschema-sdks
-          docker-compose -f stachschema-sdks/docker-compose.generate.yml up
-          
-      - name: Raise pull request
-        if: env.STACH_CHANGES == 2
-        run: |
-          cd stachschema-sdks
-          git config user.email "${{ secrets.USER_EMAIL }}"
-          git config user.name "${{ secrets.USER }}"
-          
-          branch_name="feat/stachschema_sdks_`date +%s`/updating-models" 
-          git checkout -b $branch_name
-          git status
-          git add -A .
-          git commit -m "feat(stachschema-sdks): Updating SDKs";
-          echo "Committed all the changes"
-          
-          git push origin $branch_name
-          echo "Pushed all the changes to remote location"
-          
-          export GITHUB_USER=${{ secrets.USER }}
-          export GITHUB_TOKEN=${{ secrets.USER_API_KEY }}
-          hub pull-request -m "feat(stachschema-sdks): Updating SDKs" -h $branch_name
+      - name: Create Pull Request
+        if: env.STACH_CHANGES == 1
+        uses: peter-evans/create-pull-request@v3
+        with:
+          commit-message: "feat(stachschema-sdks): Auto generated commit from the stachschema PR ${{ github.event.number }}"
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          signoff: false
+          branch: "feat/stachschema-sdks/stachschema-pr-${{ github.event.number }}"
+          title: "Auto generated PR from the stachschema PR ${{ github.event.number }}"
+          body: |
+            Auto generated PR from the stachschema PR ${{ github.event.number }}
+          labels: |
+            stachschema
+            sdks
+            autogen-pr
+          assignees: ${{ github.actor }}
+          draft: false
+
 
