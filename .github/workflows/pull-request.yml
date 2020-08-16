@@ -68,6 +68,26 @@ jobs:
             echo "Does not exist"
           else
             echo "Already exists"
+                      
+            git checkout $branch_name
+            git pull
+            
+            export STACH_MODELS_PATH=${PWD}/../stachschema-models/proto
+            export STACH_SDKS_REPO_PATH=${PWD}
+            docker-compose -f docker-compose.generate.yml up
+            
+            git status
+            if git diff-index --quiet HEAD -- 
+            then 
+              echo "No changes to commit." 
+            else 
+              git add -A .
+              git commit -m "feat(sdk): Auto-commit from PR $pr_number for STACH SDK"
+              echo "Committed all the changes"
+            
+              git push origin $branch_name
+              echo "Pushed all the changes to remote location"
+            fi
           fi
                    
       - name: Updating SDKs code locally
