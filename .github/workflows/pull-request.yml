@@ -82,6 +82,7 @@ jobs:
           author: ${{ secrets.USER }} <${{ secrets.USER_EMAIL }}>
           signoff: false
           branch: "feat/stachschema-sdks/stachschema-pr-${{ github.event.number }}"
+          base: "feat/stachschema-sdks/stachschema-pr-${{ github.event.number }}"
           title: "Auto generated PR from the stachschema PR ${{ github.event.number }}"
           body: |
             Auto generated PR from the stachschema PR ${{ github.event.number }}
