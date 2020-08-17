@@ -75,10 +75,11 @@ jobs:
         if: env.STACH_CHANGES == 1
         uses: peter-evans/create-pull-request@v3
         with:
+          token: ${{ secrets.USER_API_KEY }}  
           path: "stachschema-sdks"
           commit-message: "feat(stachschema-sdks): Auto generated commit from the stachschema PR ${{ github.event.number }}"
           committer: GitHub <noreply@github.com>
-          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          author: ${{ secrets.USER }} <${{ secrets.USER_EMAIL }}>
           signoff: false
           branch: "feat/stachschema-sdks/stachschema-pr-${{ github.event.number }}"
           title: "Auto generated PR from the stachschema PR ${{ github.event.number }}"
