@@ -58,6 +58,7 @@ jobs:
           
       - name: Set GitHub configs
         run: |
+          cd stachschema-sdks
           git config user.email "${{ secrets.USER_EMAIL }}"
           git config user.name "${{ secrets.USER }}"
                    
