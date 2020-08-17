@@ -55,6 +55,11 @@ jobs:
           path: stachschema-sdks
           token: ${{ secrets.USER_API_KEY }}
           fetch-depth: 0
+          
+      - name: Set GitHub configs
+        run: |
+          git config user.email "${{ secrets.USER_EMAIL }}"
+          git config user.name "${{ secrets.USER }}"
                    
       - name: Cloning existing branch if yes
         if: env.STACH_CHANGES == 1
