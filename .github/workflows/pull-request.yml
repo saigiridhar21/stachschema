@@ -1,5 +1,14 @@
 name: Generate STACH SDKs and raise the pull request
 
+env:
+  USER_API_KEY: ${{ secrets.USER_API_KEY }}
+  USER_EMAIL: ${{ secrets.USER_EMAIL }}
+  USER: ${{ secrets.USER }}
+  GITHUB_PROTOBUF_MODELS_DIRECTORY: stachschema-models
+  PROTOBUF_MODELS_DIRECTORY: proto
+  GITHUB_PROTOBUF_SDKS_REPO: saigiridhar21/stachschema-sdks
+  GITHUB_PROTOBUF_SDKS_DIRECTORY: stachschema-sdks 
+
 on:
   pull_request:
     branches: [ master ]
@@ -15,28 +24,17 @@ jobs:
         run: |
           sudo snap install hub --classic
           
-      - name: Check out STACH models
+      - name: Check out ${{ github.repository }}
         uses: actions/checkout@v2
         with:
-          repository: saigiridhar21/stachschema-models
-          path: stachschema-models
+          repository: ${{ github.repository }}
+          path: ${{ env.GITHUB_PROTOBUF_MODELS_DIRECTORY }}
           fetch-depth: 0
           ref: "${{ github.head_ref }}" 
           
-      - name: Check branch
-        run: |
-          cd stachschema-models
-          git status
-          echo "${{ github.ref }}"
-          echo "${{ github.head_ref }}"
-          echo "${{ github.base_ref }}"
-          echo "${{ github.actor }}"
-          echo "${{ github.event.number }}"
-          echo "${{ toJson(github) }}"
-          
       - name: Check whether models were changed in last commit
         run: |
-          count=`git -C stachschema-models log -1 --name-only --oneline | grep -E ".*\.proto$" | wc -l`
+          count=`git -C ${{ env.GITHUB_PROTOBUF_MODELS_DIRECTORY }} log -1 --name-only --oneline | grep -E ".*\.proto$" | wc -l`
           if [ "$count" -eq "0" ]; then
             echo "No STACH models were updated"
           else
@@ -49,28 +47,29 @@ jobs:
         if: env.STACH_CHANGES == 1
         uses: actions/checkout@v2
         with:
-          repository: saigiridhar21/stachschema-sdks
-          path: stachschema-sdks
-          token: ${{ secrets.USER_API_KEY }}
+          repository: ${{ env.GITHUB_PROTOBUF_SDKS_REPO }}
+          path: ${{ env.GITHUB_PROTOBUF_SDKS_DIRECTORY }}
+          token: ${{ env.USER_API_KEY }}
           fetch-depth: 0
                    
       - name: Cloning existing branch if yes
         if: env.STACH_CHANGES == 1
         run: |
-          cd stachschema-sdks
+          cd ${{ env.GITHUB_PROTOBUF_SDKS_DIRECTORY }}
           
-          git config user.email "${{ secrets.USER_EMAIL }}"
-          git config user.name "${{ secrets.USER }}"
+          git config user.email "${{ env.USER_EMAIL }}"
+          git config user.name "${{ env.USER }}"
+          
           pr_number="${{ github.event.number }}"
           branch_name="feat/stachschema-sdks/stachschema-pr-$pr_number"
           remote_branch_check=$(git ls-remote --heads origin $branch_name)
           if [ -z "$remote_branch_check" ]
           then
-            echo "Does not exist"
+            echo "Branch($branch_name) does not exist"
             
             git checkout -b $branch_name
                         
-            export STACH_MODELS_PATH=${PWD}/../stachschema-models/proto
+            export STACH_MODELS_PATH=${PWD}/../${{ env.GITHUB_PROTOBUF_MODELS_DIRECTORY }}/${{ env.PROTOBUF_MODELS_DIRECTORY }}
             export STACH_SDKS_REPO_PATH=${PWD}
             docker-compose -f docker-compose.generate.yml up
             
@@ -87,8 +86,8 @@ jobs:
               echo "Pushed all the changes to remote location"
             fi
             
-            export GITHUB_USER=${{ secrets.USER }}
-            export GITHUB_TOKEN=${{ secrets.USER_API_KEY }}
+            export GITHUB_USER=${{ env.USER }}
+            export GITHUB_TOKEN=${{ env.USER_API_KEY }}
             hub pull-request -m "feat(stachschema-sdks): Updating SDKs" -h $branch_name
             
           else
@@ -97,7 +96,7 @@ jobs:
             git checkout $branch_name
             git pull
             
-            export STACH_MODELS_PATH=${PWD}/../stachschema-models/proto
+            export STACH_MODELS_PATH=${PWD}/../${{ env.GITHUB_PROTOBUF_MODELS_DIRECTORY }}/${{ env.PROTOBUF_MODELS_DIRECTORY }}
             export STACH_SDKS_REPO_PATH=${PWD}
             docker-compose -f docker-compose.generate.yml up
             
