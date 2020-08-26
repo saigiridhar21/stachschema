@@ -1,8 +1,6 @@
 name: Generate STACH SDKs and raise the pull request
 
 on:
-  push:
-    branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -55,54 +53,64 @@ jobs:
           path: stachschema-sdks
           token: ${{ secrets.USER_API_KEY }}
           fetch-depth: 0
-          
-      - name: Set GitHub configs
-        run: |
-          cd stachschema-sdks
-          git config user.email "${{ secrets.USER_EMAIL }}"
-          git config user.name "${{ secrets.USER }}"
                    
       - name: Cloning existing branch if yes
         if: env.STACH_CHANGES == 1
         run: |
           cd stachschema-sdks
           
-          export STACH_MODELS_PATH=${PWD}/../stachschema-models/proto
-          export STACH_SDKS_REPO_PATH=${PWD}
-          docker-compose -f docker-compose.generate.yml up
-                   
-      - name: Create Pull Request
-        if: env.STACH_CHANGES == 1
-        uses: peter-evans/create-pull-request@v3
-        with:
-          token: ${{ secrets.USER_API_KEY }}  
-          path: "stachschema-sdks"
-          commit-message: "feat(stachschema-sdks): Auto generated commit from the stachschema PR ${{ github.event.number }}"
-          committer: GitHub <noreply@github.com>
-          author: ${{ secrets.USER }} <${{ secrets.USER_EMAIL }}>
-          signoff: false
-          branch: "feat/stachschema-sdks/stachschema-pr-${{ github.event.number }}"
-          base: "feat/stachschema-sdks/stachschema-pr-${{ github.event.number }}"
-          title: "Auto generated PR from the stachschema PR ${{ github.event.number }}"
-          body: |
-            Auto generated PR from the stachschema PR ${{ github.event.number }}
-          labels: |
-            stachschema
-            sdks
-            autogen-pr
-          assignees: ${{ github.actor }}
-          draft: false
-
-      - name: Create pull request
-        if: env.STACH_CHANGES == 2
-        uses: gr2m/create-or-update-pull-request-action@v1.x
-        env:
-          GITHUB_TOKEN: ${{ secrets.USER_API_KEY }}
-        with:
-          title: "Auto generated PR from the stachschema PR ${{ github.event.number }}"
-          body: "Auto generated PR from the stachschema PR ${{ github.event.number }}"
-          branch: "feat/stachschema-sdks/stachschema-pr-${{ github.event.number }}"
-          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
-          path: "stachschema-sdks/"
-          commit-message: "feat(stachschema-sdks): Auto generated commit from the stachschema PR ${{ github.event.number }}"
-
+          git config user.email "${{ secrets.USER_EMAIL }}"
+          git config user.name "${{ secrets.USER }}"
+          pr_number="${{ github.event.number }}"
+          branch_name="feat/stachschema-sdks/stachschema-pr-$pr_number"
+          remote_branch_check=$(git ls-remote --heads origin $branch_name)
+          if [ -z "$remote_branch_check" ]
+          then
+            echo "Does not exist"
+            
+            git checkout -b $branch_name
+                        
+            export STACH_MODELS_PATH=${PWD}/../stachschema-models/proto
+            export STACH_SDKS_REPO_PATH=${PWD}
+            docker-compose -f docker-compose.generate.yml up
+            
+            git status
+            if git diff-index --quiet HEAD -- 
+            then 
+              echo "No changes to commit." 
+            else 
+              git add -A .
+              git commit -m "feat(sdk): Auto-commit from PR $pr_number for STACH SDK"
+              echo "Committed all the changes"
+            
+              git push origin $branch_name
+              echo "Pushed all the changes to remote location"
+            fi
+            
+            export GITHUB_USER=${{ secrets.USER }}
+            export GITHUB_TOKEN=${{ secrets.USER_API_KEY }}
+            hub pull-request -m "feat(stachschema-sdks): Updating SDKs" -h $branch_name
+            
+          else
+            echo "Already exists"
+                      
+            git checkout $branch_name
+            git pull
+            
+            export STACH_MODELS_PATH=${PWD}/../stachschema-models/proto
+            export STACH_SDKS_REPO_PATH=${PWD}
+            docker-compose -f docker-compose.generate.yml up
+            
+            git status
+            if git diff-index --quiet HEAD -- 
+            then 
+              echo "No changes to commit." 
+            else 
+              git add -A .
+              git commit -m "feat(sdk): Auto-commit from PR $pr_number for STACH SDK"
+              echo "Committed all the changes"
+            
+              git push origin $branch_name
+              echo "Pushed all the changes to remote location"
+            fi
+          fi
